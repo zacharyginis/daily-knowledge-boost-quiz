@@ -5,10 +5,10 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files first for better caching
 COPY package*.json ./
 
-# Install all dependencies (including dev dependencies needed for build)
+# Install dependencies
 RUN npm ci
 
 # Copy source code
@@ -17,13 +17,10 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-# Remove dev dependencies to reduce image size
-RUN npm prune --production
+# Install express for serving (add to package.json instead of installing separately)
+RUN npm install express --save
 
-# Install express for serving
-RUN npm install express
-
-# Expose port
+# Expose port (Cloud Run uses PORT environment variable)
 EXPOSE 8080
 
 # Start the server
