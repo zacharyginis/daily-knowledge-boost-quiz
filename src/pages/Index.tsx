@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -199,38 +200,40 @@ const Index = () => {
   if (showQuiz && !quizComplete) {
     const question = quizQuestions[currentQuestion];
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
         <div className="max-w-2xl mx-auto">
           <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">Daily Quiz</h1>
-            <Badge variant="outline" className="text-lg px-4 py-1">
+            <h1 className="text-3xl font-bold text-slate-700 mb-2">Daily Quiz</h1>
+            <Badge variant="outline" className="text-lg px-4 py-1 border-slate-300 text-slate-600">
               Question {currentQuestion + 1} of {quizQuestions.length}
             </Badge>
           </div>
 
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="h-5 w-5 text-purple-600" />
+          <Card className="shadow-sm border-slate-200">
+            <CardHeader className="bg-slate-100/50">
+              <CardTitle className="flex items-center gap-2 text-slate-700">
+                <Brain className="h-5 w-5 text-blue-400" />
                 {question.category}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-lg font-medium">{question.question}</p>
+              <p className="text-lg font-medium text-slate-700">{question.question}</p>
               
               <div className="space-y-2">
                 {question.options.map((option, index) => (
                   <Button
                     key={index}
                     variant={selectedAnswer === index ? "default" : "outline"}
-                    className={`w-full text-left justify-start h-auto p-4 ${
+                    className={`w-full text-left justify-start h-auto p-4 border-slate-200 text-slate-700 hover:bg-slate-50 ${
                       showAnswer 
                         ? index === question.correct 
-                          ? "bg-green-100 border-green-500 text-green-800" 
+                          ? "bg-emerald-50 border-emerald-200 text-emerald-700" 
                           : selectedAnswer === index 
-                            ? "bg-red-100 border-red-500 text-red-800" 
+                            ? "bg-rose-50 border-rose-200 text-rose-700" 
                             : "opacity-50"
-                        : ""
+                        : selectedAnswer === index 
+                          ? "bg-blue-50 border-blue-200" 
+                          : ""
                     }`}
                     onClick={() => !showAnswer && handleAnswerSelect(index)}
                     disabled={showAnswer}
@@ -245,12 +248,12 @@ const Index = () => {
                   <Button 
                     onClick={submitAnswer} 
                     disabled={selectedAnswer === null}
-                    className="w-full"
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white"
                   >
                     Submit Answer
                   </Button>
                 ) : (
-                  <Button onClick={nextQuestion} className="w-full">
+                  <Button onClick={nextQuestion} className="w-full bg-blue-500 hover:bg-blue-600 text-white">
                     {currentQuestion < quizQuestions.length - 1 ? "Next Question" : "Finish Quiz"}
                   </Button>
                 )}
@@ -264,32 +267,32 @@ const Index = () => {
 
   if (quizComplete) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="mb-8">
-            <Trophy className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">Quiz Complete!</h1>
-            <p className="text-xl text-gray-600">Great job on today's review!</p>
+            <Trophy className="h-16 w-16 text-amber-400 mx-auto mb-4" />
+            <h1 className="text-4xl font-bold text-slate-700 mb-2">Quiz Complete!</h1>
+            <p className="text-xl text-slate-600">Great job on today's review!</p>
           </div>
 
-          <Card className="shadow-lg mb-6">
+          <Card className="shadow-sm border-slate-200 mb-6">
             <CardContent className="p-6">
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-emerald-500">
                     {stats.correctAnswers}/{stats.totalQuestions}
                   </p>
-                  <p className="text-gray-600">Correct</p>
+                  <p className="text-slate-600">Correct</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-blue-600">{accuracyRate}%</p>
-                  <p className="text-gray-600">Accuracy</p>
+                  <p className="text-2xl font-bold text-blue-500">{accuracyRate}%</p>
+                  <p className="text-slate-600">Accuracy</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Button onClick={nextDay} size="lg" className="px-8">
+          <Button onClick={nextDay} size="lg" className="px-8 bg-blue-500 hover:bg-blue-600 text-white">
             Continue to Next Day
           </Button>
         </div>
@@ -298,49 +301,49 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Daily Learning</h1>
-          <p className="text-xl text-gray-600">Expand your knowledge across seven domains</p>
+          <h1 className="text-4xl font-bold text-slate-700 mb-2">Daily Learning</h1>
+          <p className="text-xl text-slate-600">Expand your knowledge across seven domains</p>
           
           <div className="flex justify-center gap-4 mt-4">
-            <Badge variant="outline" className="text-sm px-3 py-1">
+            <Badge variant="outline" className="text-sm px-3 py-1 border-slate-300 text-slate-600">
               <Calendar className="h-4 w-4 mr-1" />
               Day {currentDay + 1}
             </Badge>
-            <Badge variant="outline" className="text-sm px-3 py-1">
+            <Badge variant="outline" className="text-sm px-3 py-1 border-slate-300 text-slate-600">
               🔥 {stats.streak} day streak
             </Badge>
           </div>
         </div>
 
         {/* Stats */}
-        <Card className="mb-8 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-yellow-500" />
+        <Card className="mb-8 shadow-sm border-slate-200">
+          <CardHeader className="bg-slate-100/30">
+            <CardTitle className="flex items-center gap-2 text-slate-700">
+              <Trophy className="h-5 w-5 text-amber-400" />
               Your Progress
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               <div>
-                <p className="text-2xl font-bold text-blue-600">{stats.totalDays}</p>
-                <p className="text-sm text-gray-600">Days Learned</p>
+                <p className="text-2xl font-bold text-blue-500">{stats.totalDays}</p>
+                <p className="text-sm text-slate-600">Days Learned</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">{accuracyRate}%</p>
-                <p className="text-sm text-gray-600">Quiz Accuracy</p>
+                <p className="text-2xl font-bold text-emerald-500">{accuracyRate}%</p>
+                <p className="text-sm text-slate-600">Quiz Accuracy</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-purple-600">{stats.correctAnswers}</p>
-                <p className="text-sm text-gray-600">Correct Answers</p>
+                <p className="text-2xl font-bold text-purple-400">{stats.correctAnswers}</p>
+                <p className="text-sm text-slate-600">Correct Answers</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-orange-600">{stats.streak}</p>
-                <p className="text-sm text-gray-600">Current Streak</p>
+                <p className="text-2xl font-bold text-amber-500">{stats.streak}</p>
+                <p className="text-sm text-slate-600">Current Streak</p>
               </div>
             </div>
           </CardContent>
@@ -349,124 +352,124 @@ const Index = () => {
         {/* Learning Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* English Word */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-t-lg">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-slate-200">
+            <CardHeader className="bg-gradient-to-r from-blue-400 to-blue-500 text-white rounded-t-lg">
               <CardTitle className="flex items-center gap-2">
                 <Globe className="h-5 w-5" />
                 English Word
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <h3 className="text-2xl font-bold text-blue-700 mb-2">{today.english.word}</h3>
-              <p className="text-gray-700 mb-3">{today.english.definition}</p>
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <p className="text-sm text-blue-800 italic">"{today.english.example}"</p>
+              <h3 className="text-2xl font-bold text-blue-600 mb-2">{today.english.word}</h3>
+              <p className="text-slate-700 mb-3">{today.english.definition}</p>
+              <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                <p className="text-sm text-blue-700 italic">"{today.english.example}"</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Spanish Word */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white rounded-t-lg">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-slate-200">
+            <CardHeader className="bg-gradient-to-r from-rose-400 to-rose-500 text-white rounded-t-lg">
               <CardTitle className="flex items-center gap-2">
                 <Globe className="h-5 w-5" />
                 Spanish Word
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <h3 className="text-2xl font-bold text-red-700 mb-2">{today.spanish.word}</h3>
-              <p className="text-gray-700 mb-3">{today.spanish.definition}</p>
-              <div className="bg-red-50 p-3 rounded-lg">
-                <p className="text-sm text-red-800 italic">"{today.spanish.example}"</p>
+              <h3 className="text-2xl font-bold text-rose-600 mb-2">{today.spanish.word}</h3>
+              <p className="text-slate-700 mb-3">{today.spanish.definition}</p>
+              <div className="bg-rose-50 p-3 rounded-lg border border-rose-100">
+                <p className="text-sm text-rose-700 italic">"{today.spanish.example}"</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Coding Term */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-t-lg">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-slate-200">
+            <CardHeader className="bg-gradient-to-r from-emerald-400 to-emerald-500 text-white rounded-t-lg">
               <CardTitle className="flex items-center gap-2">
                 <Code className="h-5 w-5" />
                 Coding Term
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <h3 className="text-2xl font-bold text-green-700 mb-2">{today.coding.term}</h3>
-              <p className="text-gray-700 mb-3">{today.coding.definition}</p>
-              <div className="bg-green-50 p-3 rounded-lg">
-                <p className="text-sm text-green-800 italic">"{today.coding.example}"</p>
+              <h3 className="text-2xl font-bold text-emerald-600 mb-2">{today.coding.term}</h3>
+              <p className="text-slate-700 mb-3">{today.coding.definition}</p>
+              <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                <p className="text-sm text-emerald-700 italic">"{today.coding.example}"</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Finance Term */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-t-lg">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-slate-200">
+            <CardHeader className="bg-gradient-to-r from-amber-400 to-amber-500 text-white rounded-t-lg">
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="h-5 w-5" />
                 Finance Term
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <h3 className="text-2xl font-bold text-yellow-700 mb-2">{today.finance.term}</h3>
-              <p className="text-gray-700 mb-3">{today.finance.definition}</p>
-              <div className="bg-yellow-50 p-3 rounded-lg">
-                <p className="text-sm text-yellow-800 italic">"{today.finance.example}"</p>
+              <h3 className="text-2xl font-bold text-amber-600 mb-2">{today.finance.term}</h3>
+              <p className="text-slate-700 mb-3">{today.finance.definition}</p>
+              <div className="bg-amber-50 p-3 rounded-lg border border-amber-100">
+                <p className="text-sm text-amber-700 italic">"{today.finance.example}"</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Philosophy Term */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-t-lg">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-slate-200">
+            <CardHeader className="bg-gradient-to-r from-purple-400 to-purple-500 text-white rounded-t-lg">
               <CardTitle className="flex items-center gap-2">
                 <Lightbulb className="h-5 w-5" />
                 Philosophy Term
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <h3 className="text-2xl font-bold text-purple-700 mb-2">{today.philosophy.term}</h3>
-              <p className="text-gray-700 mb-3">{today.philosophy.definition}</p>
-              <div className="bg-purple-50 p-3 rounded-lg">
-                <p className="text-sm text-purple-800 italic">"{today.philosophy.example}"</p>
+              <h3 className="text-2xl font-bold text-purple-600 mb-2">{today.philosophy.term}</h3>
+              <p className="text-slate-700 mb-3">{today.philosophy.definition}</p>
+              <div className="bg-purple-50 p-3 rounded-lg border border-purple-100">
+                <p className="text-sm text-purple-700 italic">"{today.philosophy.example}"</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Politics Term */}
-          <Card className="shadow-lg hover:shadow-xl transition-shadow">
-            <CardHeader className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-t-lg">
+          <Card className="shadow-sm hover:shadow-md transition-shadow border-slate-200">
+            <CardHeader className="bg-gradient-to-r from-indigo-400 to-indigo-500 text-white rounded-t-lg">
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
                 Political Term
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <h3 className="text-2xl font-bold text-indigo-700 mb-2">{today.politics.term}</h3>
-              <p className="text-gray-700 mb-3">{today.politics.definition}</p>
-              <div className="bg-indigo-50 p-3 rounded-lg">
-                <p className="text-sm text-indigo-800 italic">"{today.politics.example}"</p>
+              <h3 className="text-2xl font-bold text-indigo-600 mb-2">{today.politics.term}</h3>
+              <p className="text-slate-700 mb-3">{today.politics.definition}</p>
+              <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-100">
+                <p className="text-sm text-indigo-700 italic">"{today.politics.example}"</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Stoic Quote Card */}
-        <Card className="shadow-lg hover:shadow-xl transition-shadow mb-8">
-          <CardHeader className="bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-t-lg">
+        <Card className="shadow-sm hover:shadow-md transition-shadow mb-8 border-slate-200">
+          <CardHeader className="bg-gradient-to-r from-slate-500 to-slate-600 text-white rounded-t-lg">
             <CardTitle className="flex items-center gap-2">
               <Quote className="h-5 w-5" />
               Daily Stoic Wisdom
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-            <blockquote className="text-xl font-medium text-gray-800 mb-4 italic">
+            <blockquote className="text-xl font-medium text-slate-700 mb-4 italic">
               "{today.stoicQuote.quote}"
             </blockquote>
             <div className="flex flex-col gap-2">
-              <p className="text-lg font-semibold text-gray-700">— {today.stoicQuote.author}</p>
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <p className="text-sm text-gray-700">{today.stoicQuote.context}</p>
+              <p className="text-lg font-semibold text-slate-600">— {today.stoicQuote.author}</p>
+              <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                <p className="text-sm text-slate-600">{today.stoicQuote.context}</p>
               </div>
             </div>
           </CardContent>
@@ -475,19 +478,19 @@ const Index = () => {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           {currentDay > 0 && (
-            <Button onClick={startQuiz} size="lg" className="px-8">
+            <Button onClick={startQuiz} size="lg" className="px-8 bg-blue-500 hover:bg-blue-600 text-white">
               <BookOpen className="h-5 w-5 mr-2" />
               Take Yesterday's Quiz
             </Button>
           )}
           
           {currentDay < dailyWords.length - 1 && (
-            <Button onClick={nextDay} variant="outline" size="lg" className="px-8">
+            <Button onClick={nextDay} variant="outline" size="lg" className="px-8 border-slate-300 text-slate-600 hover:bg-slate-50">
               Skip to Next Day
             </Button>
           )}
           
-          <Button onClick={resetProgress} variant="destructive" size="lg" className="px-8">
+          <Button onClick={resetProgress} variant="destructive" size="lg" className="px-8 bg-rose-500 hover:bg-rose-600 text-white">
             Reset Progress
           </Button>
         </div>
