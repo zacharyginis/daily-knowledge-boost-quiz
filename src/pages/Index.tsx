@@ -1,16 +1,18 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Calendar, Trophy, Brain, DollarSign, Code, Globe } from 'lucide-react';
+import { BookOpen, Calendar, Trophy, Brain, DollarSign, Code, Globe, Lightbulb, Users, Quote } from 'lucide-react';
 
 interface WordData {
   english: { word: string; definition: string; example: string; };
   spanish: { word: string; definition: string; example: string; };
   coding: { term: string; definition: string; example: string; };
   finance: { term: string; definition: string; example: string; };
+  philosophy: { term: string; definition: string; example: string; };
+  politics: { term: string; definition: string; example: string; };
+  stoicQuote: { quote: string; author: string; context: string; };
 }
 
 interface QuizQuestion {
@@ -32,19 +34,28 @@ const dailyWords: WordData[] = [
     english: { word: "Serendipity", definition: "The occurrence of events by chance in a happy way", example: "Finding that book was pure serendipity." },
     spanish: { word: "Madrugada", definition: "Early morning hours before dawn", example: "Me levanto en la madrugada para estudiar." },
     coding: { term: "Algorithm", definition: "A step-by-step procedure for solving a problem", example: "The sorting algorithm arranges data efficiently." },
-    finance: { term: "Compound Interest", definition: "Interest calculated on initial principal and accumulated interest", example: "Compound interest helps your savings grow exponentially." }
+    finance: { term: "Compound Interest", definition: "Interest calculated on initial principal and accumulated interest", example: "Compound interest helps your savings grow exponentially." },
+    philosophy: { term: "Epistemology", definition: "The study of knowledge and how we come to know things", example: "Epistemology questions whether we can truly know anything with certainty." },
+    politics: { term: "Sovereignty", definition: "Supreme power or authority within a territory", example: "National sovereignty means a country governs itself without external interference." },
+    stoicQuote: { quote: "You have power over your mind - not outside events. Realize this, and you will find strength.", author: "Marcus Aurelius", context: "From Meditations, emphasizing the Stoic principle of focusing on what we can control." }
   },
   {
     english: { word: "Ephemeral", definition: "Lasting for a very short time", example: "The beauty of cherry blossoms is ephemeral." },
     spanish: { word: "Sobremesa", definition: "Time spent at table after a meal in conversation", example: "Disfrutamos una larga sobremesa con la familia." },
     coding: { term: "API", definition: "Application Programming Interface - a way for programs to communicate", example: "The weather API provides real-time data." },
-    finance: { term: "Diversification", definition: "Spreading investments across various assets to reduce risk", example: "Diversification protects your portfolio from market volatility." }
+    finance: { term: "Diversification", definition: "Spreading investments across various assets to reduce risk", example: "Diversification protects your portfolio from market volatility." },
+    philosophy: { term: "Nihilism", definition: "The belief that life is without objective meaning or purpose", example: "Nihilism suggests that traditional values and moral principles are unfounded." },
+    politics: { term: "Bureaucracy", definition: "A system of government through departments and subdivisions", example: "The bureaucracy can slow down policy implementation through red tape." },
+    stoicQuote: { quote: "The best revenge is not to be like your enemy.", author: "Marcus Aurelius", context: "Teaching that responding to hatred with virtue is more powerful than retaliation." }
   },
   {
     english: { word: "Ubiquitous", definition: "Present, appearing, or found everywhere", example: "Smartphones have become ubiquitous in modern society." },
     spanish: { word: "Antier", definition: "The day before yesterday", example: "Antier fui al mercado con mi abuela." },
     coding: { term: "Debugging", definition: "The process of finding and fixing errors in code", example: "Debugging took most of my afternoon yesterday." },
-    finance: { term: "Inflation", definition: "The rate at which prices for goods and services rise", example: "Inflation affects the purchasing power of your money." }
+    finance: { term: "Inflation", definition: "The rate at which prices for goods and services rise", example: "Inflation affects the purchasing power of your money." },
+    philosophy: { term: "Determinism", definition: "The doctrine that all events are the result of previously existing causes", example: "Hard determinism suggests that free will is an illusion." },
+    politics: { term: "Populism", definition: "Political approach that appeals to ordinary people against the elite", example: "Populism often emerges during times of economic uncertainty." },
+    stoicQuote: { quote: "Waste no more time arguing what a good man should be. Be one.", author: "Marcus Aurelius", context: "Emphasizing action over endless debate about virtue and morality." }
   }
 ];
 
@@ -76,6 +87,24 @@ const generateQuizQuestions = (day: number): QuizQuestion[] => {
       options: ["A type of bank", "A stock exchange", "A currency", previousDay.finance.definition],
       correct: 3,
       category: "Finance"
+    },
+    {
+      question: `In philosophy, what is ${previousDay.philosophy.term}?`,
+      options: ["A type of government", "A mathematical concept", previousDay.philosophy.definition, "A literary genre"],
+      correct: 2,
+      category: "Philosophy"
+    },
+    {
+      question: `In politics, what is ${previousDay.politics.term}?`,
+      options: [previousDay.politics.definition, "A type of economy", "A philosophical theory", "A scientific method"],
+      correct: 0,
+      category: "Politics"
+    },
+    {
+      question: `Who said: "${previousDay.stoicQuote.quote.substring(0, 30)}..."?`,
+      options: ["Aristotle", "Plato", previousDay.stoicQuote.author, "Socrates"],
+      correct: 2,
+      category: "Stoic Quote"
     }
   ];
 };
@@ -270,11 +299,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">Daily Learning</h1>
-          <p className="text-xl text-gray-600">Expand your vocabulary across four domains</p>
+          <p className="text-xl text-gray-600">Expand your knowledge across seven domains</p>
           
           <div className="flex justify-center gap-4 mt-4">
             <Badge variant="outline" className="text-sm px-3 py-1">
@@ -318,7 +347,7 @@ const Index = () => {
         </Card>
 
         {/* Learning Cards */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* English Word */}
           <Card className="shadow-lg hover:shadow-xl transition-shadow">
             <CardHeader className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-t-lg">
@@ -386,7 +415,62 @@ const Index = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Philosophy Term */}
+          <Card className="shadow-lg hover:shadow-xl transition-shadow">
+            <CardHeader className="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-t-lg">
+              <CardTitle className="flex items-center gap-2">
+                <Lightbulb className="h-5 w-5" />
+                Philosophy Term
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <h3 className="text-2xl font-bold text-purple-700 mb-2">{today.philosophy.term}</h3>
+              <p className="text-gray-700 mb-3">{today.philosophy.definition}</p>
+              <div className="bg-purple-50 p-3 rounded-lg">
+                <p className="text-sm text-purple-800 italic">"{today.philosophy.example}"</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Politics Term */}
+          <Card className="shadow-lg hover:shadow-xl transition-shadow">
+            <CardHeader className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white rounded-t-lg">
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Political Term
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <h3 className="text-2xl font-bold text-indigo-700 mb-2">{today.politics.term}</h3>
+              <p className="text-gray-700 mb-3">{today.politics.definition}</p>
+              <div className="bg-indigo-50 p-3 rounded-lg">
+                <p className="text-sm text-indigo-800 italic">"{today.politics.example}"</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Stoic Quote Card */}
+        <Card className="shadow-lg hover:shadow-xl transition-shadow mb-8">
+          <CardHeader className="bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-t-lg">
+            <CardTitle className="flex items-center gap-2">
+              <Quote className="h-5 w-5" />
+              Daily Stoic Wisdom
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <blockquote className="text-xl font-medium text-gray-800 mb-4 italic">
+              "{today.stoicQuote.quote}"
+            </blockquote>
+            <div className="flex flex-col gap-2">
+              <p className="text-lg font-semibold text-gray-700">— {today.stoicQuote.author}</p>
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <p className="text-sm text-gray-700">{today.stoicQuote.context}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
