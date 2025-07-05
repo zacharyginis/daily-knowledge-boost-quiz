@@ -1,10 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Calendar, Trophy, Brain, DollarSign, Code, Globe, Lightbulb, Users, Quote } from 'lucide-react';
+import { BookOpen, Calendar, Trophy, Brain, DollarSign, Code, Globe, Lightbulb, Users, Quote, LogIn } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
+import UserProfile from '@/components/UserProfile';
 
 interface WordData {
   english: { word: string; definition: string; example: string; };
@@ -111,6 +113,8 @@ const generateQuizQuestions = (day: number): QuizQuestion[] => {
 };
 
 const Index = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [currentDay, setCurrentDay] = useState(0);
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizQuestions, setQuizQuestions] = useState<QuizQuestion[]>([]);
@@ -121,21 +125,29 @@ const Index = () => {
   const [quizComplete, setQuizComplete] = useState(false);
 
   useEffect(() => {
-    const savedDay = localStorage.getItem('currentDay');
-    const savedStats = localStorage.getItem('learningStats');
+    if (!loading && !user) {
+      return; // Don't redirect, just show the login prompt
+    }
     
-    if (savedDay) {
-      setCurrentDay(parseInt(savedDay));
+    if (user) {
+      const savedDay = localStorage.getItem(`currentDay_${user.id}`);
+      const savedStats = localStorage.getItem(`learningStats_${user.id}`);
+      
+      if (savedDay) {
+        setCurrentDay(parseInt(savedDay));
+      }
+      if (savedStats) {
+        setStats(JSON.parse(savedStats));
+      }
     }
-    if (savedStats) {
-      setStats(JSON.parse(savedStats));
-    }
-  }, []);
+  }, [user, loading]);
 
   useEffect(() => {
-    localStorage.setItem('currentDay', currentDay.toString());
-    localStorage.setItem('learningStats', JSON.stringify(stats));
-  }, [currentDay, stats]);
+    if (user) {
+      localStorage.setItem(`currentDay_${user.id}`, currentDay.toString());
+      localStorage.setItem(`learningStats_${user.id}`, JSON.stringify(stats));
+    }
+  }, [currentDay, stats, user]);
 
   const startQuiz = () => {
     const questions = generateQuizQuestions(currentDay);
@@ -190,9 +202,43 @@ const Index = () => {
     setStats({ totalDays: 1, streak: 1, correctAnswers: 0, totalQuestions: 0 });
     setShowQuiz(false);
     setQuizComplete(false);
-    localStorage.removeItem('currentDay');
-    localStorage.removeItem('learningStats');
+    if (user) {
+      localStorage.removeItem(`currentDay_${user.id}`);
+      localStorage.removeItem(`learningStats_${user.id}`);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
+        <div className="text-center">
+          <BookOpen className="h-12 w-12 text-blue-500 mx-auto mb-4 animate-pulse" />
+          <p className="text-slate-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
+        <div className="max-w-4xl mx-auto text-center py-16">
+          <BookOpen className="h-16 w-16 text-blue-500 mx-auto mb-6" />
+          <h1 className="text-4xl font-bold text-slate-700 mb-4">Daily Learning</h1>
+          <p className="text-xl text-slate-600 mb-8">Expand your knowledge across seven domains</p>
+          <p className="text-lg text-slate-500 mb-8">Sign in to track your progress and start learning</p>
+          <Button 
+            onClick={() => navigate('/auth')} 
+            size="lg" 
+            className="px-8 bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            <LogIn className="h-5 w-5 mr-2" />
+            Sign In to Start Learning
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const today = dailyWords[currentDay];
   const accuracyRate = stats.totalQuestions > 0 ? Math.round((stats.correctAnswers / stats.totalQuestions) * 100) : 0;
@@ -202,11 +248,14 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
         <div className="max-w-2xl mx-auto">
-          <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-slate-700 mb-2">Daily Quiz</h1>
-            <Badge variant="outline" className="text-lg px-4 py-1 border-slate-300 text-slate-600">
-              Question {currentQuestion + 1} of {quizQuestions.length}
-            </Badge>
+          <div className="flex justify-between items-center mb-6">
+            <div className="text-center flex-1">
+              <h1 className="text-3xl font-bold text-slate-700 mb-2">Daily Quiz</h1>
+              <Badge variant="outline" className="text-lg px-4 py-1 border-slate-300 text-slate-600">
+                Question {currentQuestion + 1} of {quizQuestions.length}
+              </Badge>
+            </div>
+            <UserProfile />
           </div>
 
           <Card className="shadow-sm border-slate-200">
@@ -269,6 +318,10 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
         <div className="max-w-2xl mx-auto text-center">
+          <div className="flex justify-end mb-4">
+            <UserProfile />
+          </div>
+          
           <div className="mb-8">
             <Trophy className="h-16 w-16 text-amber-400 mx-auto mb-4" />
             <h1 className="text-4xl font-bold text-slate-700 mb-2">Quiz Complete!</h1>
@@ -303,20 +356,23 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-slate-700 mb-2">Daily Learning</h1>
-          <p className="text-xl text-slate-600">Expand your knowledge across seven domains</p>
-          
-          <div className="flex justify-center gap-4 mt-4">
-            <Badge variant="outline" className="text-sm px-3 py-1 border-slate-300 text-slate-600">
-              <Calendar className="h-4 w-4 mr-1" />
-              Day {currentDay + 1}
-            </Badge>
-            <Badge variant="outline" className="text-sm px-3 py-1 border-slate-300 text-slate-600">
-              🔥 {stats.streak} day streak
-            </Badge>
+        {/* Header with User Profile */}
+        <div className="flex justify-between items-start mb-8">
+          <div className="text-center flex-1">
+            <h1 className="text-4xl font-bold text-slate-700 mb-2">Daily Learning</h1>
+            <p className="text-xl text-slate-600">Expand your knowledge across seven domains</p>
+            
+            <div className="flex justify-center gap-4 mt-4">
+              <Badge variant="outline" className="text-sm px-3 py-1 border-slate-300 text-slate-600">
+                <Calendar className="h-4 w-4 mr-1" />
+                Day {currentDay + 1}
+              </Badge>
+              <Badge variant="outline" className="text-sm px-3 py-1 border-slate-300 text-slate-600">
+                🔥 {stats.streak} day streak
+              </Badge>
+            </div>
           </div>
+          <UserProfile />
         </div>
 
         {/* Stats */}
